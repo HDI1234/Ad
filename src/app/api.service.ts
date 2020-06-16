@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { bmi } from './bmi';
+import { person } from './person';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
@@ -7,12 +7,12 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ApiService {
-  PHP_API_SERVER = "http://localhost/bmi_api/api";
+  PHP_API_SERVER = 'http://localhost/ubi/Ad/api';
   constructor(private httpClient: HttpClient) {}
-  readBmi(): Observable<bmi[]>{
-    return this.httpClient.get<bmi[]>(`${this.PHP_API_SERVER}/index.php`);
+  readBmi(): Observable<person[]> {
+    return this.httpClient.get<person[]>(`${this.PHP_API_SERVER}/index.php`);
   }
-  createBmi(bmi: bmi): Observable<bmi>{
-    return this.httpClient.post<bmi>(`${this.PHP_API_SERVER}/create_bmi.php`, bmi);
+  createBmi(bmi: person): Observable<person> {
+    return this.httpClient.post<person>(`${this.PHP_API_SERVER}/create_bmi.php`, bmi);
   }
 }

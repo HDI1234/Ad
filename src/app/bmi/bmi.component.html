@@ -5,13 +5,13 @@
 
   <form [formGroup]="angForm" (ngSubmit)="create()" #f="ngForm">
       <h4>Name :</h4>
-      <input type="text" formControlName="name" [(ngModel)]="selectedbmi.Name">
+      <input type="text" formControlName="Name" [(ngModel)]="selectedbmi.Name">
       <br>
       <h4>Weight(kg) :</h4>
-      <input type="text" formControlName="weight" [(ngModel)]="selectedbmi.Weight">
+      <input type="number" formControlName="Weight" [(ngModel)]="selectedbmi.Weight">
       <br>
       <h4>Height(m) :</h4>
-      <input type="text" formControlName="height" [(ngModel)]="selectedbmi.Height">
+      <input type="number" formControlName="Height" [(ngModel)]="selectedbmi.Height">
       <br>
       <button type="submit" (click)="createBmi(f)">Calculate</button>
   </form>
@@ -29,13 +29,13 @@
               <th>BMI</th>
               <th>Category</th>
           </tr>
-          <tr *ngFor="let display of bmi">
-              <td>{{display.Bmi_id}}</td>
-              <td>{{display.Name}}</td>
-              <td>{{display.Weight}}kg</td>
-              <td>{{display.Height}}m</td>
-              <td>{{display.BMI}}</td>
-              <td>{{display.Category}}</td>
+          <tr *ngFor="let person of bmi">
+              <td>{{ person.Bmi_id }}</td>
+              <td>{{ person.Name }}</td>
+              <td>{{ person.Weight }}kg</td>
+              <td>{{ person.Height }}m</td>
+              <td>{{ person.BMI }}</td>
+              <td>{{ person.Category }}</td>
           </tr>
       </table>
   </div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
-import { bmi } from '../bmi'
+import { person } from '../person';
 import { FormControl, FormGroup, Validators, FormBuilder} from '@angular/forms';
 
 @Component({
@@ -11,16 +11,16 @@ import { FormControl, FormGroup, Validators, FormBuilder} from '@angular/forms';
 export class BmiComponent implements OnInit {
 
   angForm: FormGroup;
-  bmi: bmi[];
+  bmi: person[];
   totalbmi: number;
-  selectedbmi: bmi = {Bmi_id:null, Name:null, Weight:null, Height:null, BMI:null, Category:null};
+  selectedbmi: person = {Bmi_id: null, Name: null, Weight: null, Height: null, BMI: 0, Category: null};
   constructor(private apiService: ApiService, private fb: FormBuilder) {
 
     this.createForm();
-    this.apiService.readBmi().subscribe((bmi: bmi[]) =>{
+    this.apiService.readBmi().subscribe((bmi: person[]) => {
       this.bmi = bmi;
       console.log(this.bmi);
-    })
+    });
 
   }
 
@@ -28,7 +28,7 @@ export class BmiComponent implements OnInit {
   }
 
   create(){
-    console.log(this.angForm.value)
+    console.log(this.angForm.value);
   }
 
   createForm()
@@ -42,50 +42,37 @@ export class BmiComponent implements OnInit {
 
     createBmi(form){
 
-      this.totalbmi = this.selectedbmi.Weight/(this.selectedbmi.Height * this.selectedbmi.Height);
-
+      this.totalbmi = (this.selectedbmi.Weight / this.selectedbmi.Height / this.selectedbmi.Height) * 10000;
       if (this.totalbmi >= 29.9 ) {
-        this.totalbmi = this.selectedbmi.BMI;
-        this.selectedbmi.Category = "Obese";
+        this.selectedbmi.Category = 'Obese';
       }
 
       else if (this.totalbmi >= 25 && this.totalbmi < 29.9) {
-        this.totalbmi = this.selectedbmi.BMI;
-        this.selectedbmi.Category = "Overweight";
+        this.selectedbmi.Category = 'Overweight';
       }
 
       else if (this.totalbmi >= 18.5 && this.totalbmi < 24.9) {
-        this.totalbmi = this.selectedbmi.BMI;
-        this.selectedbmi.Category = "Normal";
+        this.selectedbmi.Category = 'Normal';
       }
 
-      else if (this.totalbmi > 18.5) {
-        this.totalbmi = this.selectedbmi.BMI;
-        this.selectedbmi.Category = "Underweight";
+      else if (this.totalbmi < 18.5) {
+        this.selectedbmi.Category = 'Underweight';
       }
+
+      this.selectedbmi.BMI = this.totalbmi;
 
       form.value.Bmi_id = this.selectedbmi.Bmi_id;
       form.value.Name = this.selectedbmi.Name;
       form.value.Weight = this.selectedbmi.Weight;
       form.value.Height = this.selectedbmi.Height;
-      form.value.BMI = this.selectedbmi.BMI;
+      form.value.BMI = parseFloat(this.selectedbmi.BMI.toFixed(2));
       form.value.Category = this.selectedbmi.Category;
-      if(this.selectedbmi && this.selectedbmi.Bmi_id){
-        this.apiService.readBmi().subscribe((bmi: bmi[])=>{
-          this.bmi = bmi;
-      });
-      }
-      else {
-        this.apiService.createBmi(form.value).subscribe((bmi: bmi)=>{
-          console.log("bmi created, ", bmi);
-          this.apiService.readBmi().subscribe((bmi: bmi[])=>{
-            this.bmi = bmi;
-        });
-      })
-      }
-    }
 
-    selectbmi(bmi: bmi){
-      this.selectedbmi = bmi;
+      this.apiService.createBmi(form.value).subscribe((bmi: person) => {
+        console.log('bmi created, ', bmi);
+        this.apiService.readBmi().subscribe((bmi: person[]) => {
+          this.bmi = bmi;
+        });
+      });
     }
 }
